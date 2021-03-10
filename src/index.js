@@ -95,12 +95,22 @@ app.put('/todos/:id', checksExistsUserAccount, checksExistsTodo, (request, respo
 
 });
 
-app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+app.patch('/todos/:id/done', checksExistsUserAccount, checksExistsTodo, (request, response) => {
+  const { username } = request.header;
+  const { id } = request.params;
+  const { toDo } = request;
+
+  toDo.done = true;
+
+  return response.status(201).json(toDo);
 });
 
-app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+app.delete('/todos/:id', checksExistsUserAccount, checksExistsTodo, (request, response) => {
+  const { toDo, user } = request;
+  
+  user.todos.splice(user.todos.indexOf(toDo), 1);
+
+  return response.status(204).send();
 });
 
 module.exports = app;
